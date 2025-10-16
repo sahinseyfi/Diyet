@@ -1,8 +1,9 @@
 def test_packages_import():
-    # Importing should execute __init__ lines for coverage
-    import src.api as _a  # noqa: F401
-    import src.schemas as _s  # noqa: F401
-    import src.services as _v  # noqa: F401
+    import importlib
+
+    # Importing should execute __init__ files for coverage
+    importlib.import_module("src.api")
+    importlib.import_module("src.schemas")
+    importlib.import_module("src.services")
 
     assert True
-
