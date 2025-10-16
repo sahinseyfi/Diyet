@@ -47,8 +47,8 @@ NOW=$(date -u +"%Y-%m-%d %H:%M:%SZ")
   echo "|---|---|---|---|---|"
   jq -r '.[] | "| \(.shortId) | \(.level) | \(.lastSeen) | \(.count) | [\(.title)](\(.permalink)) |"' < "$OUT_JSON"
   echo "\nNotlar:"
-  echo "- Sentry Issues üzerinden ayrıntılara gidin.\n- `scripts/sentry_dsn.sh` ve `scripts/sentry_report.sh` ile otomasyon sağlandı."
+  echo '- Sentry Issues üzerinden ayrıntılara gidin.'
+  echo '- scripts/sentry_dsn.sh ve scripts/sentry_report.sh ile otomasyon sağlandı.'
 } > "$OUT_MD"
 
 echo "[sentry] Rapor üretildi: $OUT_MD"
-
