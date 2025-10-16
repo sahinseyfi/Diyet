@@ -5,17 +5,19 @@ target-version = ["py311", "py312"]
 [tool.ruff]
 line-length = 88
 target-version = "py311"
-select = ["E", "F", "I", "B", "UP"]
-ignore = []
 exclude = [
     ".venv",
     ".git",
     "assets",
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = []
+
+[tool.ruff.lint.isort]
 known-first-party = ["src"]
-profile = "black"
+combine-as-imports = true
 
 [tool.pytest.ini_options]
 addopts = "-q --cov=src --cov-report=term-missing --cov-fail-under=90"
@@ -24,4 +26,3 @@ testpaths = ["tests"]
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
-
