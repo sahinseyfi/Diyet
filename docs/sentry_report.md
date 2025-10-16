@@ -1,0 +1,8 @@
+# Sentry Özeti
+\nGüncelleme: 2025-10-16 02:35:28Z (UTC) — Proje: diyet/javascript-nextjs
+\nEn son 20 çözülmemiş hata (son 14 gün):\n
+| Kısa ID | Seviye | Son Görülme | Sayaç | Başlık |
+|---|---|---|---|---|
+| JAVASCRIPT-NEXTJS-1 | error | 2025-10-16T02:31:23.534000Z | 2 | [TypeError: window.myUndefinedFunction is not a function](https://diyet.sentry.io/issues/70315747/) |
+\nNotlar:
+- Sentry Issues üzerinden ayrıntılara gidin.\n-  ve  ile otomasyon sağlandı.

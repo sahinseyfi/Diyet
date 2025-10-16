@@ -1,0 +1,15 @@
+[
+  {
+    "id": "70315747",
+    "shortId": "JAVASCRIPT-NEXTJS-1",
+    "title": "TypeError: window.myUndefinedFunction is not a function",
+    "level": "error",
+    "culprit": "HTMLButtonElement.<anonymous>(<unknown module>)",
+    "firstSeen": "2025-10-16T02:31:03.536000Z",
+    "lastSeen": "2025-10-16T02:31:23.534000Z",
+    "count": 2,
+    "userCount": 1,
+    "type": "error",
+    "permalink": "https://diyet.sentry.io/issues/70315747/"
+  }
+]
