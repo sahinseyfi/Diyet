@@ -1,0 +1,85 @@
+name: Sentry Triage
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # her saat başı
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup jq
+        run: sudo apt-get update && sudo apt-get install -y jq >/dev/null
+
+      - name: Generate Sentry report
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        run: |
+          bash scripts/sentry_report.sh
+
+      - name: Commit report
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add docs/sentry_report.md docs/sentry_issues.json || true
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(sentry): otomatik triage raporu güncellendi"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+
+      - name: Open GitHub issues for new top errors
+        if: ${{ success() }}
+        uses: actions/github-script@v7
+        env:
+          REPO: ${{ github.repository }}
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'docs/sentry_issues.json';
+            if (!fs.existsSync(path)) {
+              core.info('No sentry_issues.json, skipping issue creation.');
+              return;
+            }
+            const issues = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const top = issues
+              .filter(i => ['fatal','error'].includes(i.level))
+              .sort((a,b)=> (b.count||0)-(a.count||0))
+              .slice(0,5);
+            for (const it of top) {
+              const q = `repo:${process.env.REPO} "[sentry] ${it.shortId}" in:title`;
+              const found = await github.rest.search.issuesAndPullRequests({ q });
+              if (found.data.total_count > 0) {
+                core.info(`Issue exists for ${it.shortId}`);
+                continue;
+              }
+              const title = `[sentry] ${it.shortId} ${it.title}`.slice(0,200);
+              const body = [
+                `Seviye: ${it.level}`,
+                `Son görülme: ${it.lastSeen}`,
+                `Olay sayısı: ${it.count}, Kullanıcı: ${it.userCount}`,
+                `Culprit: ${it.culprit}`,
+                `Sentry: ${it.permalink}`,
+                '',
+                'Not: Bu issue Sentry triage workflow tarafından otomatik açıldı.'
+              ].join('\n');
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['sentry','bug']
+              });
+            }
+
