@@ -24,12 +24,55 @@
         <div class="actions">
           <a class="btn" href="https://github.com/sahinseyfi/Diyet" target="_blank" rel="noreferrer">GitHub’da Aç</a>
           <a class="btn secondary" href="docs/configuration.md" target="_blank" rel="noreferrer">Konfigürasyon</a>
+          <button id="sentry-test" class="btn secondary" type="button">Sentry Test Hatası</button>
         </div>
       </section>
       <footer>
         <span>Powered by Supabase · Vercel</span>
       </footer>
     </main>
+
+    <!-- Sentry (Browser) CDN -->
+    <script src="https://browser.sentry-cdn.com/7.120.0/bundle.tracing.min.js" crossorigin="anonymous"></script>
+    <script>
+      (async function () {
+        try {
+          const res = await fetch('/api/runtime-config');
+          const cfg = await res.json();
+          if (cfg && cfg.sentryDsn) {
+            Sentry.init({
+              dsn: cfg.sentryDsn,
+              environment: cfg.environment || 'development',
+              release: cfg.release || undefined,
+              // APM örnekleme oranı (MVP için düşük tut)
+              tracesSampleRate: 0.2,
+            });
+            console.log('[sentry] initialized');
+          } else {
+            console.warn('[sentry] DSN bulunamadı; Sentry devre dışı');
+          }
+        } catch (e) {
+          console.warn('[sentry] init hata', e);
+        }
+
+        // Test butonu tıklanınca örnek hata
+        const btn = document.getElementById('sentry-test');
+        if (btn) {
+          btn.addEventListener('click', function () {
+            try {
+              // Kasıtlı hata
+              window.myUndefinedFunction();
+            } catch (err) {
+              if (window.Sentry) {
+                Sentry.captureException(err);
+                alert('Sentry test hatası gönderildi (konsolu kontrol edin).');
+              } else {
+                alert('Sentry etkin değil (DSN ayarlı mı?).');
+              }
+            }
+          });
+        }
+      })();
+    </script>
   </body>
   </html>
-
