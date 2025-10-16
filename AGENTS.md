@@ -37,3 +37,43 @@ Bu depo için varsayılan kullanıcı profili ve beklentiler şöyledir. Bu terc
 - Operasyon kapsamı: Ajan, mümkün olduğunda şu işlemleri CLI ile üstlenir: depo oluşturma/bağlama (GitHub), çevresel değişkenleri/secrets tanımlama, Supabase proje ve veritabanı oluşturma/şema yönetimi, Vercel proje bağlama ve dağıtım, CI/CD entegrasyonu. Yıkıcı işlemler (silme/override) öncesi açık onay istenir.
 - Hata toleransı: Etkileşimli adımlar gerekiyorsa non-interactive bayraklar ve varsayılanlar kullanılır; bu mümkün değilse kullanıcıdan bir defalık doğrulama istenir ve kalıcı yapılandırma yapılır.
 - İzlenebilirlik: Ajan çalıştırdığı komutları ve etkilerini özetler; sırları maskeleyerek minimal günlük paylaşır.
+
+## Codex Çalışma Stratejisi (MVP ve Sonrası)
+
+Bu bölüm, GPT‑5 Codex High’ın kullanıcı müdahalesi olmadan ilerleyebilmesi için önerilen işlem adımlarını içerir. Bu strateji, yukarıdaki “Model-Specific Planning Flow” kurallarıyla birlikte uygulanır.
+
+1) Başlangıç Taraması
+- `AGENTS.md`, `docs/prd.md`, `README.md`, `pyproject.toml`, CI workflow’larını oku.
+- Planı güncelle (kısa, doğrusal adımlar). Kapsam dışı taleplerde modele göre kullanıcıyı uyar.
+
+2) Görev Ayrımı ve Kapsam Kontrolü
+- Ürüne dair istekler → GPT‑5 High (PRD/akış). Teknik üretim → Codex.
+- Her değişiklikte “en küçük dilim” yaklaşımı: küçük PR’lar, hızlı geri bildirim.
+
+3) Uygulama İlkeleri
+- Dizinler: `src/api`, `src/services`, `src/schemas`, `src/common`, testler `tests/`.
+- Kod stili: black (88), ruff. Commit mesajı: Conventional Commits.
+- Test yaklaşımı: önce birim test, sonra entegrasyon; kapsama ≥%90.
+
+4) Doğrulama ve CI
+- `pytest` → ruff → black → coverage sırası. CI kırılırsa önce lint/format, sonra test, en son env/secrets.
+- Hızlı düzeltme: eksik kapsama için minimal test, format hatasında otomatik düzeltme.
+
+5) Ortam ve Gizli Bilgiler
+- Sırlar `.env` ve platform Secrets’ta tutulur. Asla loglama.
+- CLI’ler: `gh`, `vercel`, `supabase`. Non‑interactive bayraklar ve token’lar ile çalış.
+
+6) Veri ve Şema Değişimleri
+- Supabase migration komutlarıyla ilerle. DDL değişiklikleri için versiyonlu migration yaz.
+- RLS politikalarını her tablo ekinde tanımla; varsayılan “gizli profil” modele göre filtre uygula.
+
+7) Gözlemlenebilirlik ve Hata Yönetimi
+- Vercel Analytics açık. Gerekirse Sentry/benzeri ekle (kullanıcı onayıyla).
+- Runbook’lar: `docs/runbooks/ci.md`, `docs/runbooks/deploy.md`, `docs/runbooks/supabase.md`.
+
+8) Karar Kaydı
+- Mimarî kararları `docs/adr/` altında ADR formatında kaydet.
+
+9) Yol Haritası
+- Kısa vadeli backlog/MVP → `docs/roadmap.md`.
+- Fazlar ilerledikçe güncelle ve Issue/PR şablonlarıyla ilişkilendir.
