@@ -5,3 +5,4 @@
 - Codex stratejisi: docs/codex_strategy.md
 - Yol haritası: docs/roadmap.md
 - Runbooklar: docs/runbooks/
+  - Sentry & Logtail: docs/runbooks/logging.md

@@ -15,6 +15,9 @@ CI/CD ve CLI Erişimi
 - SENTRY_AUTH_TOKEN= (Sentry personal token; scope: project:read)
 - SENTRY_ORG= (örn. diyet)
 - SENTRY_PROJECT= (örn. diyet-web)
+ 
+Uygulama Logları (Logtail)
+- LOGTAIL_SOURCE_TOKEN= (Better Stack Logtail Source Token)
 
 Notlar
 - `GITHUB_TOKEN` GitHub CLI ile etkileşimsiz repo/yayın işlemleri için gereklidir.
@@ -34,6 +37,11 @@ Kurulum Kısa Akışı
 Sentry DSN (Opsiyonel, token ile otomatik)
 - `.env` içine `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `VERCEL_TOKEN` ekleyin.
 - `make sentry-dsn` komutu ile DSN Sentry API'den çekilir ve Vercel'e (production/preview/development) `SENTRY_DSN` olarak yazılır.
+
+Logtail (Better Stack) Kurulumu
+- Better Stack Logs hesabı → Yeni "Source" oluştur → `LOGTAIL_SOURCE_TOKEN` kopyala.
+- Vercel ortam değişkeni ekle: `printf '%s' "$LOGTAIL_SOURCE_TOKEN" | npx vercel env add LOGTAIL_SOURCE_TOKEN production` (preview/development için tekrarla).
+- Test: Canlı sitede "Logtail Test Logu" butonuna bas veya `/api/logtail-test` çağır.
 
 Sentry Triage (Otomatik Öğrenme Sistemi)
 - GitHub Secrets olarak şu anahtarları ekleyin: `SENTRY_AUTH_TOKEN` (scope: project:read), `SENTRY_ORG`, `SENTRY_PROJECT`.
