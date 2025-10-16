@@ -3,7 +3,7 @@ VENV := .venv
 PIP := $(VENV)/bin/pip
 PYTHON := $(VENV)/bin/python
 
-.PHONY: venv install fmt lint test test-cov check bootstrap
+.PHONY: venv install fmt lint test test-cov check bootstrap sentry-dsn
 
 venv:
 	@test -d $(VENV) || $(PY) -m venv $(VENV)
@@ -28,3 +28,6 @@ check: fmt lint test
 
 bootstrap:
 	bash scripts/bootstrap.sh
+
+sentry-dsn:
+	bash scripts/sentry_dsn.sh
