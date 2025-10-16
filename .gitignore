@@ -17,8 +17,9 @@ coverage.xml
 .vscode/
 
 # Project
-assets/
+# assets klasörü takip edilsin (statik dosyalar)
 node_modules/
 dist/
 build/
 
+.vercel
