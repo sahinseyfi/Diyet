@@ -1,5 +1,5 @@
 # Sentry Özeti
-\nGüncelleme: 2025-12-12 08:37:26Z (UTC) — Proje: diyet/javascript-nextjs
+\nGüncelleme: 2025-12-12 09:31:21Z (UTC) — Proje: diyet/javascript-nextjs
 \nEn son 20 çözülmemiş hata (son 14 gün):\n
 | Kısa ID | Seviye | Son Görülme | Sayaç | Başlık |
 |---|---|---|---|---|
